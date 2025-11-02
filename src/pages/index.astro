@@ -1,9 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import TechStack from "../components/TechStack.astro";
-import Accomplishments from "../components/Accomplishments.astro";
 import Projects from "../components/Projects.astro";
-import { SpotifyWidget } from "../components/spotify/SpotifyWidget";
 import { ClickableImage } from "../components/ClickableImage.tsx";
 import Testimony from "../components/Testimony.astro";
 ---
@@ -14,11 +11,34 @@ import Testimony from "../components/Testimony.astro";
       <span class="text-gray-500">//</span> welcome!
     </h1>
     <p class="text-sm lg:text-base">
-      my name is Jordan Baron. I am a self-taught programmer who has been at it
-      since I was eleven, with two years of professional experience. I primarily
-      do frontend stuff, but I have backend experience and am currently diving
-      into low level programming with Zig. I am currently a senior software engineer at Blue Agilis.
+      I'm Jordan. I currently spend my days at Blue Agilis where I help build AI healthcare applications. My expertise spans fullstack web development, with significant experience in AI and blockchain domains.
+      Outside of work, I enjoy roaming the streets of Staunton, VA on my One Wheel and playing Minecraft with friends.
     </p>
+  </div>
+
+  <div>
+    <span class="font-bold text-lg">Where to find me:</span>
+    <ul class="list-disc list-inside flex flex-col gap-1 mt-2 [&>li>a]:underline">
+      <li>
+        <a
+          href="https://github.com/jordanbaron" target="_blank">
+          Github
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://x.com/jordobaro" target="_blank">
+        Twitter
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://www.linkedin.com/in/jordanmbaron/" target="_blank">
+          LinkedIn
+        </a>
+      </li>
+    </ul>
+    
   </div>
   <div>
     <span class="font-medium text-lg block mb-2"
@@ -31,13 +51,10 @@ import Testimony from "../components/Testimony.astro";
       value="Jordan is one of those rare young engineering talents that just relishes in problem-solving. Doesn't matter what language, what framework, he just dives in and figures it out. Any team looking to hire him would be lucky to have him."
     />
   </div>
-  <SpotifyWidget />
   <Projects />
-  <TechStack />
-  <Accomplishments />
 
   <div class="flex flex-col gap-4">
-    <span class="flex gap-2 text-sm"
+    <span class="flex gap-2"
       >here's a picture of me with my cat lacy. we have the same smile <span
         class="rotate-[60deg] flex w-max h-max">:&rpar;</span
       ></span

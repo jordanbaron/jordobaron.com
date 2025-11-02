@@ -16,15 +16,15 @@ const formattedPathname = pathname.split("/")[1];
         class="aspect-square object-cover"
       />
       <span class="font-medium">codedbyjordan</span>
-    </div>
-    {
+      {
       pathname !== "/" && (
         <span class="text-gray-400">/ {formattedPathname}</span>
       )
     }
+    </div>
   </div>
   <ul
-    class="flex items-center gap-6 hover:*:border-b-2 *:hover:border-green-800"
+    class="flex items-center gap-6 hover:*:underline"
   >
     <li><a href="/">home</a></li>
     <li><a href="/blog">blog</a></li>
