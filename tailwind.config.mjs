@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        "jetbrains-mono": ["JetBrains Mono", "monospace"],
+        "inter": ["Inter", "sans-serif"],
+        "garamond": ["EB Garamond", "serif"],
       },
     },
   },

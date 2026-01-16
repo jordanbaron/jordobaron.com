@@ -8,17 +8,10 @@ const formattedPathname = pathname.split("/")[1];
 >
   <div class="text-xl">
     <div class="flex items-center gap-4">
-      <img
-        src="/chimp-thinking.jpg"
-        alt="Chimp thinking"
-        width="48"
-        height="48"
-        class="aspect-square object-cover"
-      />
-      <span class="font-medium">codedbyjordan</span>
+      <span class="font-medium text-2xl font-garamond">jordobaron</span>
       {
       pathname !== "/" && (
-        <span class="text-gray-400">/ {formattedPathname}</span>
+        <span class="text-[#A89F91]">/ {formattedPathname}</span>
       )
     }
     </div>
@@ -30,4 +23,4 @@ const formattedPathname = pathname.split("/")[1];
     <li><a href="/blog">blog</a></li>
   </ul>
 </div>
-<hr class="border-neutral-700 w-full mt-4" />
+<hr class="border-[#3D322A] w-full mt-4" />

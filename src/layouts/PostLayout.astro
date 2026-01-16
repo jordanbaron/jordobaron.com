@@ -10,18 +10,18 @@ const { title, description, tags, date } = frontmatter;
   <div class="flex flex-col gap-6">
     <div class="lg:mt-6 text-left flex flex-col gap-4">
       <div>
-        <h1 class="text-2xl md:text-4xl font-bold" transition:name="post-title">
+        <h1 class="text-2xl md:text-4xl font-bold font-garamond" transition:name="post-title">
           {title}
         </h1>
       </div>
-      <span class="text-gray-300" transition:name="post-description"
+      <span class="text-[#A89F91]" transition:name="post-description"
         >{description}</span
       >
-      <span class="text-sm text-neutral-500">
+      <span class="text-sm text-[#6B5E50]">
         date: {date} | tags: {formatTags(tags)}
       </span>
     </div>
-    <hr class="border-gray-500" />
+    <hr class="border-[#3D322A]" />
   </div>
   <div class="text-left" id="postWrapper">
     <slot />
@@ -32,6 +32,7 @@ const { title, description, tags, date } = frontmatter;
   #postWrapper > :global(h2) {
     font-size: 2rem;
     font-weight: 600;
+    font-family: "EB Garamond", serif;
     margin-top: 3rem;
     margin-bottom: 1rem;
   }
@@ -64,7 +65,7 @@ const { title, description, tags, date } = frontmatter;
 
   #postWrapper > :global(ul > li > code) {
     padding: 4px;
-    background-color: #1d1d1d;
+    background-color: #2A2018;
   }
 
   #postWrapper > :global(blockquote) {
