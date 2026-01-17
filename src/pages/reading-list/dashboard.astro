@@ -21,12 +21,21 @@ const items = await db
   <div class="flex flex-col gap-6">
     <div class="flex items-center justify-between">
       <h1 class="text-2xl md:text-4xl font-bold font-garamond">Reading List</h1>
-      <a
-        href="/reading-list/new"
-        class="bg-border hover:bg-border-hover text-text font-medium py-2 px-4 rounded transition-colors"
-      >
-        Add New
-      </a>
+      <div class="flex items-center gap-3">
+        <a
+          href="/reading-list/new"
+          class="bg-border hover:bg-border-hover text-text font-medium py-2 px-4 rounded transition-colors"
+        >
+          Add New
+        </a>
+        <button
+          id="logout-btn"
+          type="button"
+          class="text-text-muted hover:text-text font-medium py-2 px-4 rounded transition-colors cursor-pointer"
+        >
+          Logout
+        </button>
+      </div>
     </div>
 
     {items.length === 0 ? (
@@ -95,3 +104,12 @@ const items = await db
     )}
   </div>
 </Layout>
+
+<script>
+  import { signOut } from "../../lib/auth-client";
+
+  document.getElementById("logout-btn")?.addEventListener("click", async () => {
+    await signOut();
+    window.location.href = "/reading-list";
+  });
+</script>
