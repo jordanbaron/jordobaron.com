@@ -1,0 +1,85 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { actions } from "astro:actions";
+
+if (!Astro.locals.session) {
+  return Astro.redirect("/reading-list/login");
+}
+
+const result = Astro.getActionResult(actions.createReadingListItem);
+if (result && !result.error) {
+  return Astro.redirect("/reading-list/dashboard");
+}
+---
+
+<Layout title="Add to Reading List">
+  <div class="flex flex-col gap-6">
+    <h1 class="text-2xl md:text-4xl font-bold font-garamond">Add to Reading List</h1>
+
+    {result?.error && (
+      <div class="bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded">
+        {result.error.message || "Failed to create item"}
+      </div>
+    )}
+
+    <form method="POST" action={actions.createReadingListItem} class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="type" class="text-text-muted">Type</label>
+        <select
+          id="type"
+          name="type"
+          required
+          class="bg-background-card border border-border rounded px-4 py-2 text-text focus:outline-none focus:border-text-muted transition-colors"
+        >
+          <option value="article">Article</option>
+          <option value="book">Book</option>
+        </select>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="title" class="text-text-muted">Title</label>
+        <input
+          id="title"
+          name="title"
+          type="text"
+          required
+          class="bg-background-card border border-border rounded px-4 py-2 text-text placeholder-text-faint focus:outline-none focus:border-text-muted transition-colors"
+          placeholder="Enter title"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="author" class="text-text-muted">
+          Author <span class="text-text-faint">(optional)</span>
+        </label>
+        <input
+          id="author"
+          name="author"
+          type="text"
+          class="bg-background-card border border-border rounded px-4 py-2 text-text placeholder-text-faint focus:outline-none focus:border-text-muted transition-colors"
+          placeholder="Enter author name"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="url" class="text-text-muted">
+          URL <span class="text-text-faint">(optional)</span>
+        </label>
+        <input
+          id="url"
+          name="url"
+          type="url"
+          class="bg-background-card border border-border rounded px-4 py-2 text-text placeholder-text-faint focus:outline-none focus:border-text-muted transition-colors"
+          placeholder="https://example.com/article"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="bg-border hover:bg-border-hover text-text font-medium py-2 px-4 rounded transition-colors mt-2"
+      >
+        Add to Reading List
+      </button>
+    </form>
+  </div>
+</Layout>

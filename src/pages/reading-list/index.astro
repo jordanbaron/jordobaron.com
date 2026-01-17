@@ -1,0 +1,92 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { db } from "../../lib/db";
+import { readingListItem } from "../../lib/schema";
+import { desc } from "drizzle-orm";
+import BookIcon from "../../components/BookIcon.astro";
+import WebIcon from "../../components/WebIcon.astro";
+
+const items = await db
+  .select()
+  .from(readingListItem)
+  .orderBy(desc(readingListItem.createdAt));
+
+// Group items by month
+const groupedItems = items.reduce((acc, item) => {
+  const date = item.createdAt ? new Date(item.createdAt) : new Date();
+  const monthKey = date.toLocaleDateString("en-US", { 
+    year: "numeric", 
+    month: "long" 
+  });
+  
+  if (!acc[monthKey]) {
+    acc[monthKey] = [];
+  }
+  acc[monthKey].push(item);
+  return acc;
+}, {} as Record<string, typeof items>);
+
+const months = Object.keys(groupedItems);
+---
+
+<Layout title="Reading List">
+  <div class="flex flex-col gap-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl md:text-4xl font-bold font-garamond">Reading List</h1>
+        <p class="text-text-muted mt-2">Articles and books I've been reading.</p>
+      </div>
+      {Astro.locals.session && (
+        <a
+          href="/reading-list/dashboard"
+          class="bg-border hover:bg-border-hover text-text font-medium py-2 px-4 rounded transition-colors"
+        >
+          Dashboard
+        </a>
+      )}
+    </div>
+
+    {months.length === 0 ? (
+      <p class="text-text-muted">Nothing here yet.</p>
+    ) : (
+      months.map((month) => (
+        <section class="flex flex-col gap-4">
+          <h2 class="text-2xl font-semibold text-text-muted font-garamond">{month}</h2>
+          <ul class="flex flex-col gap-3">
+            {groupedItems[month].map((item) => (
+              <li class="flex flex-col">
+                <div class="flex items-center gap-1">
+                  <span>
+                    {item.type === "book" ? (
+                      <BookIcon />
+                    ) : (
+                      <WebIcon />
+                    )}
+                  </span>
+
+                  {item.url ? (
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="text-text underline hover:text-white transition-colors"
+                    >
+                      {item.title}
+                    </a>
+                  ) : (
+                    <span class="text-text">{item.title} {item.author ? `by ${item.author}` : ''}</span>
+                  )}
+                  {item.author && (
+                    <span class="text-text">
+                      by {item.author}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    )}
+  </div>
+</Layout>

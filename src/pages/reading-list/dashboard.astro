@@ -1,0 +1,97 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TrashIcon from "../../components/TrashIcon.astro";
+import { actions } from "astro:actions";
+import { db } from "../../lib/db";
+import { readingListItem } from "../../lib/schema";
+import { eq, desc } from "drizzle-orm";
+
+if (!Astro.locals.session) {
+  return Astro.redirect("/reading-list/login");
+}
+
+const items = await db
+  .select()
+  .from(readingListItem)
+  .where(eq(readingListItem.userId, Astro.locals.user!.id))
+  .orderBy(desc(readingListItem.createdAt));
+---
+
+<Layout title="Dashboard">
+  <div class="flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl md:text-4xl font-bold font-garamond">Reading List</h1>
+      <a
+        href="/reading-list/new"
+        class="bg-border hover:bg-border-hover text-text font-medium py-2 px-4 rounded transition-colors"
+      >
+        Add New
+      </a>
+    </div>
+
+    {items.length === 0 ? (
+      <div class="text-center py-12">
+        <p class="text-text-muted">Your reading list is empty.</p>
+        <a href="/reading-list/new" class="text-text underline mt-2 inline-block">
+          Add your first item
+        </a>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {items.map((item) => (
+          <article class="bg-background-card border border-border rounded-lg p-4 flex flex-col gap-3 hover:border-border-hover transition-colors">
+            <div class="flex items-center justify-between">
+              <span class={`text-xs font-medium px-2 py-1 rounded text-text ${
+                item.type === "book" 
+                  ? "bg-badge-book" 
+                  : "bg-badge-article"
+              }`}>
+                {item.type === "book" ? "Book" : "Article"}
+              </span>
+              <div class="flex items-center gap-2">
+                <time class="text-xs text-text-faint">
+                  {item.createdAt?.toLocaleDateString()}
+                </time>
+                <form method="POST" action={actions.deleteReadingListItem}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <button 
+                    type="submit"
+                    class="text-text-faint hover:text-red-500 transition-colors cursor-pointer"
+                    title="Delete item"
+                  >
+                    <TrashIcon />
+                  </button>
+                </form>
+              </div>
+            </div>
+            
+            <h2 class="text-lg font-semibold text-text font-garamond">
+              {item.url ? (
+                <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:underline">
+                  {item.title}
+                </a>
+              ) : (
+                item.title
+              )}
+            </h2>
+            
+            {item.author && (
+              <p class="text-sm text-text-muted">by {item.author}</p>
+            )}
+            
+            {item.url && (
+              <a 
+                href={item.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="text-xs text-text-faint hover:text-text-muted truncate transition-colors"
+              >
+                {new URL(item.url).hostname}
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    )}
+  </div>
+</Layout>
