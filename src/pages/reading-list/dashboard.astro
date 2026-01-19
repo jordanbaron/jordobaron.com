@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import TrashIcon from "../../components/TrashIcon.astro";
+import PencilIcon from "../../components/PencilIcon.astro";
 import { actions } from "astro:actions";
 import { db } from "../../lib/db";
 import { readingListItem } from "../../lib/schema";
@@ -46,13 +47,13 @@ const items = await db
         </a>
       </div>
     ) : (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.map((item) => (
           <article class="bg-background-card border border-border rounded-lg p-4 flex flex-col gap-3 hover:border-border-hover transition-colors">
             <div class="flex items-center justify-between">
               <span class={`text-xs font-medium px-2 py-1 rounded text-text ${
-                item.type === "book" 
-                  ? "bg-badge-book" 
+                item.type === "book"
+                  ? "bg-badge-book"
                   : "bg-badge-article"
               }`}>
                 {item.type === "book" ? "Book" : "Article"}
@@ -61,9 +62,16 @@ const items = await db
                 <time class="text-xs text-text-faint">
                   {item.createdAt?.toLocaleDateString()}
                 </time>
+                <a
+                  href={`/reading-list/edit/${item.id}`}
+                  class="text-text-faint hover:text-text transition-colors"
+                  title="Edit item"
+                >
+                  <PencilIcon />
+                </a>
                 <form method="POST" action={actions.deleteReadingListItem}>
                   <input type="hidden" name="id" value={item.id} />
-                  <button 
+                  <button
                     type="submit"
                     class="text-text-faint hover:text-red-500 transition-colors cursor-pointer"
                     title="Delete item"
@@ -73,7 +81,7 @@ const items = await db
                 </form>
               </div>
             </div>
-            
+
             <h2 class="text-lg font-semibold text-text font-garamond">
               {item.url ? (
                 <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:underline">
@@ -83,15 +91,15 @@ const items = await db
                 item.title
               )}
             </h2>
-            
+
             {item.author && (
               <p class="text-sm text-text-muted">by {item.author}</p>
             )}
-            
+
             {item.url && (
-              <a 
-                href={item.url} 
-                target="_blank" 
+              <a
+                href={item.url}
+                target="_blank"
                 rel="noopener noreferrer"
                 class="text-xs text-text-faint hover:text-text-muted truncate transition-colors"
               >

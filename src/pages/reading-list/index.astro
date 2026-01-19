@@ -5,6 +5,7 @@ import { readingListItem } from "../../lib/schema";
 import { desc } from "drizzle-orm";
 import BookIcon from "../../components/BookIcon.astro";
 import WebIcon from "../../components/WebIcon.astro";
+import CheckIcon from "../../components/CheckIcon.astro";
 
 const items = await db
   .select()
@@ -14,11 +15,11 @@ const items = await db
 // Group items by month
 const groupedItems = items.reduce((acc, item) => {
   const date = item.createdAt ? new Date(item.createdAt) : new Date();
-  const monthKey = date.toLocaleDateString("en-US", { 
-    year: "numeric", 
-    month: "long" 
+  const monthKey = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long"
   });
-  
+
   if (!acc[monthKey]) {
     acc[monthKey] = [];
   }
@@ -34,7 +35,7 @@ const months = Object.keys(groupedItems);
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl md:text-4xl font-bold font-garamond">Reading List</h1>
-        <p class="text-text-muted mt-2">Articles and books I've been reading.</p>
+        <p class="text-text-muted mt-2">Articles and books I've been reading/want to read. Entries marked with a check have been read.</p>
       </div>
       {Astro.locals.session && (
         <a
@@ -56,18 +57,23 @@ const months = Object.keys(groupedItems);
             {groupedItems[month].map((item) => (
               <li class="flex flex-col">
                 <div class="flex items-center gap-1">
-                  <span>
+                  <span class="flex items-center">
                     {item.type === "book" ? (
                       <BookIcon />
                     ) : (
                       <WebIcon />
                     )}
+                    {item.read && (
+                      <span>
+                        <CheckIcon />
+                      </span>
+                    )}
                   </span>
 
                   {item.url ? (
-                    <a 
-                      href={item.url} 
-                      target="_blank" 
+                    <a
+                      href={item.url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       class="text-text underline hover:text-white transition-colors"
                     >

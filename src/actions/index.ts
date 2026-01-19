@@ -5,6 +5,44 @@ import { readingListItem } from "../lib/schema";
 import { eq, and } from "drizzle-orm";
 
 export const server = {
+  updateReadingListItem: defineAction({
+    accept: "form",
+    input: z.object({
+      id: z.string().min(1, "ID is required"),
+      title: z.string().min(1, "Title is required"),
+      author: z.string().nullable(),
+      url: z.string().url().nullable(),
+      type: z.enum(["article", "book"]),
+      read: z.coerce.boolean().default(false),
+    }),
+    handler: async (input, context) => {
+      if (!context.locals.user) {
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "You must be logged in to update items",
+        });
+      }
+
+      await db
+        .update(readingListItem)
+        .set({
+          title: input.title,
+          author: input.author || null,
+          url: input.url || null,
+          type: input.type,
+          read: input.read,
+        })
+        .where(
+          and(
+            eq(readingListItem.id, input.id),
+            eq(readingListItem.userId, context.locals.user.id)
+          )
+        );
+
+      return { success: true };
+    },
+  }),
+
   deleteReadingListItem: defineAction({
     accept: "form",
     input: z.object({
@@ -38,6 +76,7 @@ export const server = {
       author: z.string().nullable(),
       url: z.string().url().nullable(),
       type: z.enum(["article", "book"]),
+      read: z.coerce.boolean().default(false),
     }),
     handler: async (input, context) => {
       console.log(input);
@@ -56,6 +95,7 @@ export const server = {
         author: input.author || null,
         url: input.url || null,
         type: input.type,
+        read: input.read,
         userId: context.locals.user.id,
       });
 

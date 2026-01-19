@@ -1,0 +1,95 @@
+---
+interface Props {
+  action: string;
+  item?: {
+    id?: string;
+    type: "article" | "book";
+    title: string;
+    author?: string | null;
+    url?: string | null;
+    read?: boolean;
+  };
+  submitLabel: string;
+}
+
+const { action, item, submitLabel } = Astro.props;
+---
+
+<form method="POST" action={action} class="flex flex-col gap-4">
+  {item?.id && (
+    <input type="hidden" name="id" value={item.id} />
+  )}
+
+  <div class="flex flex-col gap-2">
+    <label for="type" class="text-text-muted">Type</label>
+    <select
+      id="type"
+      name="type"
+      required
+      class="bg-background-card border border-border rounded px-4 py-2 text-text focus:outline-none focus:border-text-muted transition-colors"
+    >
+      <option value="article" selected={item?.type === "article"}>Article</option>
+      <option value="book" selected={item?.type === "book"}>Book</option>
+    </select>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label for="title" class="text-text-muted">Title</label>
+    <input
+      id="title"
+      name="title"
+      type="text"
+      required
+      value={item?.title || ""}
+      class="bg-background-card border border-border rounded px-4 py-2 text-text placeholder-text-faint focus:outline-none focus:border-text-muted transition-colors"
+      placeholder="Enter title"
+    />
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label for="author" class="text-text-muted">
+      Author <span class="text-text-faint">(optional)</span>
+    </label>
+    <input
+      id="author"
+      name="author"
+      type="text"
+      value={item?.author || ""}
+      class="bg-background-card border border-border rounded px-4 py-2 text-text placeholder-text-faint focus:outline-none focus:border-text-muted transition-colors"
+      placeholder="Enter author name"
+    />
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <label for="url" class="text-text-muted">
+      URL <span class="text-text-faint">(optional)</span>
+    </label>
+    <input
+      id="url"
+      name="url"
+      type="url"
+      value={item?.url || ""}
+      class="bg-background-card border border-border rounded px-4 py-2 text-text placeholder-text-faint focus:outline-none focus:border-text-muted transition-colors"
+      placeholder="https://example.com/article"
+    />
+  </div>
+
+  <div class="flex items-center gap-3">
+    <input
+      id="read"
+      name="read"
+      type="checkbox"
+      value="true"
+      checked={item?.read || false}
+      class="w-5 h-5 bg-background-card border border-border rounded text-text focus:outline-none focus:border-text-muted transition-colors accent-text"
+    />
+    <label for="read" class="text-text-muted">Already read</label>
+  </div>
+
+  <button
+    type="submit"
+    class="bg-border hover:bg-border-hover text-text font-medium py-2 px-4 rounded transition-colors mt-2"
+  >
+    {submitLabel}
+  </button>
+</form>

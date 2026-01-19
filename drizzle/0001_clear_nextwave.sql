@@ -1,0 +1,1 @@
+ALTER TABLE `reading_list_item` ADD `read` integer DEFAULT false NOT NULL;

@@ -95,6 +95,7 @@ export const readingListItem = sqliteTable(
     author: text("author"),
     url: text("url"),
     type: text("type", { enum: ["article", "book"] }).notNull(),
+    read: integer("read", { mode: "boolean" }).default(false).notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
