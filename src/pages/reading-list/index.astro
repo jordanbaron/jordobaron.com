@@ -6,11 +6,8 @@ import BookIcon from "../../components/BookIcon.astro";
 import WebIcon from "../../components/WebIcon.astro";
 import CheckIcon from "../../components/CheckIcon.astro";
 
-export const prerender = true;
-
 const items = await getReadingList();
 
-// Group items by month
 const groupedItems = items.reduce(
   (acc, item) => {
     const date = new Date(item.created);

@@ -11,6 +11,7 @@ export enum Collections {
 	Mfas = "_mfas",
 	Otps = "_otps",
 	Superusers = "_superusers",
+	Photos = "photos",
 	Posts = "posts",
 	ReadingList = "reading_list",
 	Users = "users",
@@ -94,6 +95,15 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export type PhotosRecord = {
+	created: IsoAutoDateString
+	description?: string
+	id: string
+	image?: FileNameString
+	taken?: IsoDateString
+	updated: IsoAutoDateString
+}
+
 export type PostsRecord = {
 	content?: HTMLString
 	created: IsoAutoDateString
@@ -138,6 +148,7 @@ export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRec
 export type MfasResponse<Texpand = unknown> = Required<MfasRecord> & BaseSystemFields<Texpand>
 export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemFields<Texpand>
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
+export type PhotosResponse<Texpand = unknown> = Required<PhotosRecord> & BaseSystemFields<Texpand>
 export type PostsResponse<Texpand = unknown> = Required<PostsRecord> & BaseSystemFields<Texpand>
 export type ReadingListResponse<Texpand = unknown> = Required<ReadingListRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
@@ -150,6 +161,7 @@ export type CollectionRecords = {
 	_mfas: MfasRecord
 	_otps: OtpsRecord
 	_superusers: SuperusersRecord
+	photos: PhotosRecord
 	posts: PostsRecord
 	reading_list: ReadingListRecord
 	users: UsersRecord
@@ -161,6 +173,7 @@ export type CollectionResponses = {
 	_mfas: MfasResponse
 	_otps: OtpsResponse
 	_superusers: SuperusersResponse
+	photos: PhotosResponse
 	posts: PostsResponse
 	reading_list: ReadingListResponse
 	users: UsersResponse

@@ -1,18 +1,30 @@
 import PocketBase from "pocketbase";
-import type { TypedPocketBase, PostsResponse, ReadingListResponse } from "./pocketbase-types";
+import {
+  Collections,
+  type TypedPocketBase,
+  type PostsResponse,
+  type ReadingListResponse,
+  type PhotosResponse,
+} from "./pocketbase-types";
 
 const pb = new PocketBase(import.meta.env.POCKETBASE_URL) as TypedPocketBase;
 
 pb.autoCancellation(false);
 
 /**
+ * Get the URL for a file stored in PocketBase
+ */
+export function getFileUrl(record: { id: string; collectionId: string }, filename: string): string {
+  return pb.files.getURL(record, filename);
+}
+
+/**
  * Fetch all posts, sorted by created date (newest first)
  */
 export async function getPosts(): Promise<PostsResponse[]> {
-  const records = await pb.collection("posts").getFullList({
+  return pb.collection(Collections.Posts).getFullList({
     sort: "-created",
   });
-  return records;
 }
 
 /**
@@ -20,10 +32,9 @@ export async function getPosts(): Promise<PostsResponse[]> {
  */
 export async function getPost(slug: string): Promise<PostsResponse | null> {
   try {
-    const record = await pb
-      .collection("posts")
+    return await pb
+      .collection(Collections.Posts)
       .getFirstListItem(`slug = "${slug}"`);
-    return record;
   } catch {
     return null;
   }
@@ -33,10 +44,18 @@ export async function getPost(slug: string): Promise<PostsResponse | null> {
  * Fetch all reading list items, sorted by created date (newest first)
  */
 export async function getReadingList(): Promise<ReadingListResponse[]> {
-  const records = await pb.collection("reading_list").getFullList({
+  return pb.collection(Collections.ReadingList).getFullList({
     sort: "-created",
   });
-  return records;
+}
+
+/**
+ * Fetch all photos, sorted by taken date (newest first)
+ */
+export async function getPhotos(): Promise<PhotosResponse[]> {
+  return pb.collection(Collections.Photos).getFullList({
+    sort: "-taken,-created",
+  });
 }
 
 export { pb };

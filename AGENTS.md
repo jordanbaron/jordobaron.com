@@ -37,3 +37,7 @@ See `.env.example` for required environment variables. The project uses PocketBa
 - `POCKETBASE_URL`
 - `POCKETBASE_ADMIN_EMAIL`
 - `POCKETBASE_ADMIN_PASSWORD`
+
+## Code Rules
+- Avoid useless comments. Code should be as self-explanatory as possible.
+- When dealing with PocketBase-related code, use the generated types under `src/lib/pocketbase-types.ts`.
