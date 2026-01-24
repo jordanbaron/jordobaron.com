@@ -14,8 +14,12 @@ pb.autoCancellation(false);
 /**
  * Get the URL for a file stored in PocketBase
  */
-export function getFileUrl(record: { id: string; collectionId: string }, filename: string): string {
-  return pb.files.getURL(record, filename);
+export function getFileUrl(
+  record: { id: string; collectionId: string },
+  filename: string,
+  thumb?: string
+): string {
+  return pb.files.getURL(record, filename, thumb ? { thumb } : undefined);
 }
 
 /**
