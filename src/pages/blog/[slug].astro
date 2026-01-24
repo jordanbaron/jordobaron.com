@@ -2,8 +2,6 @@
 import Layout from "../../layouts/Layout.astro";
 import { getPosts, getPost } from "../../lib/pocketbase";
 
-export const prerender = true;
-
 export async function getStaticPaths() {
   const posts = await getPosts();
   return posts.map((post) => ({

@@ -2,8 +2,6 @@
 import Layout from "../../layouts/Layout.astro";
 import { getPosts } from "../../lib/pocketbase";
 
-export const prerender = true;
-
 const posts = await getPosts();
 ---
 
