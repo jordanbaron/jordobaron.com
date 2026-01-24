@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel/serverless";
+import vercel from "@astrojs/vercel";
 
 import solidJs from "@astrojs/solid-js";
 
@@ -12,6 +12,6 @@ export default defineConfig({
       theme: "monokai",
     },
   },
-  output: "server",
+  output: "static",
   adapter: vercel(),
 });

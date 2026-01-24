@@ -1,0 +1,91 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getReadingList } from "../../lib/pocketbase";
+import type { ReadingListResponse } from "../../lib/pocketbase-types";
+import BookIcon from "../../components/BookIcon.astro";
+import WebIcon from "../../components/WebIcon.astro";
+import CheckIcon from "../../components/CheckIcon.astro";
+
+export const prerender = true;
+
+const items = await getReadingList();
+
+// Group items by month
+const groupedItems = items.reduce(
+  (acc, item) => {
+    const date = new Date(item.created);
+    const monthKey = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+    });
+
+    if (!acc[monthKey]) {
+      acc[monthKey] = [];
+    }
+    acc[monthKey].push(item);
+    return acc;
+  },
+  {} as Record<string, ReadingListResponse[]>
+);
+
+const months = Object.keys(groupedItems);
+---
+
+<Layout title="Reading List">
+  <div class="flex flex-col gap-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl md:text-4xl font-bold font-garamond">
+          Reading List
+        </h1>
+        <p class="text-text-muted mt-2">
+          Articles and books I've been reading/want to read. Entries marked with
+          a check have been read.
+        </p>
+      </div>
+    </div>
+
+    {
+      months.length === 0 ? (
+        <p class="text-text-muted">Nothing here yet.</p>
+      ) : (
+        months.map((month) => (
+          <section class="flex flex-col gap-4">
+            <h2 class="text-2xl font-semibold text-text-muted font-garamond">
+              {month}
+            </h2>
+            <ul class="flex flex-col gap-3">
+              {groupedItems[month].map((item) => (
+                <li class="flex flex-col">
+                  <div class="flex items-center gap-1">
+                    <span class="flex items-center">
+                      {item.type === "book" ? <BookIcon /> : <WebIcon />}
+                      {item.hasRead && (
+                        <span>
+                          <CheckIcon />
+                        </span>
+                      )}
+                    </span>
+                    {item.url ? (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-text underline hover:text-white transition-colors"
+                      >
+                        {item.title}
+                      </a>
+                    ) : (
+                      <span class="text-text">{item.title}</span>
+                    )}
+                    {item.author && <span class="text-text">by {item.author}</span>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      )
+    }
+  </div>
+</Layout>
