@@ -1,0 +1,131 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getPosts, getPost } from "../../lib/pocketbase";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getPost(slug);
+
+if (!post) {
+  return Astro.redirect("/blog");
+}
+
+const date = new Date(post.created).toLocaleDateString("en-US", {
+  month: "2-digit",
+  day: "2-digit",
+  year: "numeric",
+});
+---
+
+<Layout title="blog">
+  <div class="flex flex-col gap-6">
+    <div class="lg:mt-6 text-left flex flex-col gap-4">
+      <div>
+        <h1
+          class="text-2xl md:text-4xl font-bold font-garamond"
+          transition:name="post-title"
+        >
+          {post.title}
+        </h1>
+      </div>
+      <span class="text-[#A89F91]" transition:name="post-description">
+        {post.description}
+      </span>
+      <span class="text-sm text-[#6B5E50]">date: {date}</span>
+    </div>
+    <hr class="border-[#3D322A]" />
+  </div>
+  <div class="text-left" id="postWrapper" set:html={post.content} />
+</Layout>
+
+<style>
+  #postWrapper > :global(h2) {
+    font-size: 2rem;
+    font-weight: 600;
+    font-family: "EB Garamond", serif;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  #postWrapper > :global(h2::before) {
+    content: "# ";
+    color: rgb(107 114 128);
+  }
+
+  #postWrapper > :global(ul),
+  #postWrapper > :global(blockquote > ul) {
+    list-style-type: disc;
+    list-style-position: inside;
+    padding: 12px 0;
+  }
+
+  #postWrapper > :global(ul > li) {
+    margin: 8px 0;
+  }
+
+  #postWrapper > :global(pre) {
+    padding: 8px;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+
+  #postWrapper > :global(p > img) {
+    margin: 32px auto;
+  }
+
+  #postWrapper > :global(ul > li > code) {
+    padding: 4px;
+    background-color: #2a2018;
+  }
+
+  #postWrapper > :global(blockquote) {
+    font-style: italic;
+    margin: 16px 0;
+    margin-left: 16px;
+    padding-left: 32px;
+    border-left: 1px solid white;
+    position: relative;
+    width: 100%;
+  }
+
+  #postWrapper > :global(blockquote::before) {
+    content: open-quote;
+    position: absolute;
+    font-size: 1.5rem;
+    left: 8px;
+    top: -8px;
+  }
+
+  #postWrapper > :global(blockquote::after) {
+    content: close-quote;
+    position: absolute;
+    font-size: 1.5rem;
+    right: 24px;
+    bottom: 6px;
+  }
+
+  @media (max-width: 1024px) {
+    #postWrapper > :global(h2) {
+      font-size: 1.5rem;
+    }
+    #postWrapper > :global(blockquote) {
+      margin-left: 12px;
+      padding-left: 12px;
+    }
+    #postWrapper > :global(blockquote::before) {
+      font-size: 1.5rem;
+      top: -8px;
+      left: 2px;
+    }
+
+    #postWrapper > :global(blockquote::after) {
+      content: "";
+    }
+  }
+</style>
