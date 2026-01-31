@@ -23,7 +23,7 @@ const photos = await getPhotos();
               <ClickableImage
                 client:visible
                 src={getFileUrl(photo, photo.image)}
-                thumbSrc={getFileUrl(photo, photo.image, "600x0")}
+                thumbSrc={getFileUrl(photo, photo.image, "1200x0")}
                 alt={photo.description || "Photo"}
               />
             </div>
