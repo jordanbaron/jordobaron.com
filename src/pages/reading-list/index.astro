@@ -4,28 +4,34 @@ import { getReadingList } from "../../lib/pocketbase";
 import type { ReadingListResponse } from "../../lib/pocketbase-types";
 import BookIcon from "../../components/BookIcon.astro";
 import WebIcon from "../../components/WebIcon.astro";
-import CheckIcon from "../../components/CheckIcon.astro";
 
 const items = await getReadingList();
 
-const groupedItems = items.reduce(
-  (acc, item) => {
-    const date = new Date(item.created);
+const wantToRead: ReadingListResponse[] = [];
+const readByMonth: Record<string, ReadingListResponse[]> = {};
+
+items.forEach((item) => {
+  if (!item.readAt) {
+    wantToRead.push(item);
+  } else {
+    const date = new Date(item.readAt);
     const monthKey = date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
     });
 
-    if (!acc[monthKey]) {
-      acc[monthKey] = [];
+    if (!readByMonth[monthKey]) {
+      readByMonth[monthKey] = [];
     }
-    acc[monthKey].push(item);
-    return acc;
-  },
-  {} as Record<string, ReadingListResponse[]>
-);
+    readByMonth[monthKey].push(item);
+  }
+});
 
-const months = Object.keys(groupedItems);
+const months = Object.keys(readByMonth).sort((a, b) => {
+  const dateA = new Date(a);
+  const dateB = new Date(b);
+  return dateB.getTime() - dateA.getTime();
+});
 ---
 
 <Layout title="Reading List">
@@ -36,52 +42,84 @@ const months = Object.keys(groupedItems);
           Reading List
         </h1>
         <p class="text-text-muted mt-2">
-          Articles and books I've been reading/want to read. Entries marked with
-          a check have been read.
+          Articles and books I've been reading or want to read.
         </p>
       </div>
     </div>
 
     {
-      months.length === 0 ? (
+      items.length === 0 ? (
         <p class="text-text-muted">Nothing here yet.</p>
       ) : (
-        months.map((month) => (
-          <section class="flex flex-col gap-4">
-            <h2 class="text-2xl font-semibold text-text-muted font-garamond">
-              {month}
-            </h2>
-            <ul class="flex flex-col gap-3">
-              {groupedItems[month].map((item) => (
-                <li class="flex flex-col">
-                  <div class="flex items-center gap-1">
-                    <span class="flex items-center">
-                      {item.type === "book" ? <BookIcon /> : <WebIcon />}
-                      {item.hasRead && (
-                        <span>
-                          <CheckIcon />
-                        </span>
+        <>
+          {wantToRead.length > 0 && (
+            <section class="flex flex-col gap-4">
+              <h2 class="text-2xl font-semibold text-text-muted font-garamond">
+                Want to read
+              </h2>
+              <ul class="flex flex-col gap-3">
+                {wantToRead.map((item) => (
+                  <li class="flex flex-col">
+                    <div class="flex items-center gap-1">
+                      <span class="flex items-center">
+                        {item.type === "book" ? <BookIcon /> : <WebIcon />}
+                      </span>
+                      {item.url ? (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-text underline hover:text-white transition-colors"
+                        >
+                          {item.title}
+                        </a>
+                      ) : (
+                        <span class="text-text">{item.title}</span>
                       )}
-                    </span>
-                    {item.url ? (
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-text underline hover:text-white transition-colors"
-                      >
-                        {item.title}
-                      </a>
-                    ) : (
-                      <span class="text-text">{item.title}</span>
-                    )}
-                    {item.author && <span class="text-text">by {item.author}</span>}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))
+                      {item.author && (
+                        <span class="text-text">by {item.author}</span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {months.map((month) => (
+            <section class="flex flex-col gap-4">
+              <h2 class="text-2xl font-semibold text-text-muted font-garamond">
+                {month}
+              </h2>
+              <ul class="flex flex-col gap-3">
+                {readByMonth[month].map((item) => (
+                  <li class="flex flex-col">
+                    <div class="flex items-center gap-1">
+                      <span class="flex items-center">
+                        {item.type === "book" ? <BookIcon /> : <WebIcon />}
+                      </span>
+                      {item.url ? (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-text underline hover:text-white transition-colors"
+                        >
+                          {item.title}
+                        </a>
+                      ) : (
+                        <span class="text-text">{item.title}</span>
+                      )}
+                      {item.author && (
+                        <span class="text-text">by {item.author}</span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </>
       )
     }
   </div>
