@@ -123,6 +123,7 @@ export type ReadingListRecord = {
 	created: IsoAutoDateString
 	id: string
 	readAt?: IsoDateString
+	reading?: boolean
 	title?: string
 	type?: ReadingListTypeOptions
 	updated: IsoAutoDateString
